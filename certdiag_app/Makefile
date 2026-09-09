@@ -21,8 +21,8 @@ endif
 
 .PHONY: all build clean help race install update-bundles update-bundles-diff \
         test unit-test extended-unit-test cli-test stress-test \
-        remote-docker-test fulltest localtest \
-        testinfra-up testinfra-down
+        remote-docker-test fulltest localtest release \
+        testinfra-up testinfra-down demo demo-fixtures
 
 build:
 	$(TASK) build
@@ -36,6 +36,9 @@ localtest:
 install:
 	$(TASK) install
 
+release:
+	$(TASK) release
+
 clean:
 	$(TASK) clean
 
@@ -44,6 +47,13 @@ update-bundles:
 
 update-bundles-diff:
 	$(TASK) update-bundles-diff
+
+# Record the README demo gifs. `make demo DEMO=check` records a single tape.
+demo:
+	$(TASK) demo DEMO=$(DEMO)
+
+demo-fixtures:
+	$(TASK) demo-fixtures
 
 test:
 	$(TASK) test $(RACE_VAR)

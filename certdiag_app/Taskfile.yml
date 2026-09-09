@@ -9,10 +9,12 @@ vars:
     sh: git log -1 --format=%cd --date=format:'%Y-%m-%d %H:%M:%S'
   GIT_COMMIT:
     sh: git rev-parse --short HEAD
+  # Single source of truth for the release version; a release tag must be v{{.VERSION}}.
+  VERSION:
+    sh: cat VERSION
   LDFLAGS: >-
     -X 'github.com/zarmin/certdiag/certdiag_app/cmd.BuildDate={{.BUILD_DATE}}'
     -X 'github.com/zarmin/certdiag/certdiag_app/cmd.GitCommit={{.GIT_COMMIT}}'
-    -X 'github.com/zarmin/certdiag/certdiag_app/cmd.Version=dev'
   RACE: "false"
   BUNDLE_DIR: internal/certlib/truststore/bundles
 
@@ -35,7 +37,7 @@ tasks:
     generates:
       - "{{.BUILD_DIR}}/{{.APP_NAME}}{{exeExt}}"
     cmds:
-      - go build -ldflags "{{.LDFLAGS}}" -o {{.BUILD_DIR}}/{{.APP_NAME}}{{exeExt}} .
+      - go build -ldflags "{{.LDFLAGS}} -X 'github.com/zarmin/certdiag/certdiag_app/cmd.Version={{.VERSION}}-dev'" -o {{.BUILD_DIR}}/{{.APP_NAME}}{{exeExt}} .
     env:
       CGO_ENABLED: "0"
 
@@ -76,12 +78,21 @@ tasks:
   _build-cross:
     internal: true
     cmds:
-      - go build -ldflags "{{.LDFLAGS}}" -o {{.BUILD_DIR}}/{{.APP_NAME}}{{.SUFFIX}} .
+      - go build -ldflags "{{.LDFLAGS}} -X 'github.com/zarmin/certdiag/certdiag_app/cmd.Version={{.VERSION}}'" -o {{.BUILD_DIR}}/{{.APP_NAME}}{{.SUFFIX}} .
     env:
       CGO_ENABLED: "0"
       GOOS: "{{.GOOS}}"
       GOARCH: "{{.GOARCH}}"
       GOARM: "{{.GOARM}}"
+
+  release:
+    desc: "Build every platform for release {{.VERSION}} and write dist/checksums.txt"
+    platforms: [linux, darwin]
+    deps: [all]
+    cmds:
+      - cd {{.BUILD_DIR}} && shasum -a 256 {{.APP_NAME}}-* > checksums.txt
+      - cat {{.BUILD_DIR}}/checksums.txt
+      - 'echo "Release {{.VERSION}} ready. Tag and publish with: git tag v{{.VERSION}} && git push origin v{{.VERSION}} && gh release create v{{.VERSION}} {{.BUILD_DIR}}/{{.APP_NAME}}-* {{.BUILD_DIR}}/checksums.txt"'
 
   install:
     desc: Install to /usr/local/bin
@@ -115,6 +126,26 @@ tasks:
     cmds:
       - go run ./tools/mktables
       - echo "Review the diff above, then commit the *_gen.go files"
+
+  # -- Demo recordings ------------------------------------------
+
+  demo-fixtures:
+    desc: Build the demo certificate set used by the VHS tapes
+    deps: [build]
+    cmds:
+      - ../demo/fixtures.sh
+
+  demo:
+    desc: Record all VHS tapes into ../docs/assets/ (needs vhs; DEMO=name for one tape)
+    deps: [demo-fixtures]
+    dir: ../demo
+    vars:
+      TAPES: '{{default "overview scan check verify store remote pcap tui-lister tui-browse tui-bundle tui-remote" .DEMO}}'
+    cmds:
+      - cmd: 'command -v vhs >/dev/null || { echo "vhs not found - install from https://github.com/charmbracelet/vhs"; exit 1; }'
+        silent: true
+      - for: { var: TAPES }
+        cmd: vhs {{.ITEM}}.tape
 
   # ── Tier 1: Fast local ──────────────────────────────────────────
 

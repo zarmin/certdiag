@@ -1,0 +1,96 @@
+name: release
+
+# Publishing a release is done by pushing a tag: bump certdiag_app/VERSION, commit,
+# `git tag vX.Y.Z`, `git push origin master vX.Y.Z`. The tag must match the file,
+# the full test suite must pass, then the binaries and checksums are attached to a
+# GitHub release for that tag.
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Tag must match certdiag_app/VERSION
+        run: |
+          want="v$(cat certdiag_app/VERSION)"
+          if [ "$want" != "$GITHUB_REF_NAME" ]; then
+            echo "tag $GITHUB_REF_NAME does not match VERSION file ($want)"
+            exit 1
+          fi
+
+  test:
+    needs: guard
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            task: fulltest
+          - os: windows-latest
+            task: fulltest-nodocker
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: certdiag_app/go.mod
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - uses: arduino/setup-task@v2
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run ${{ matrix.task }}
+        working-directory: certdiag_app
+        env:
+          CERTDIAG_TEST_LOGGING: "1"
+          TZ: America/New_York
+          LANG: en_US.UTF-8
+        run: task ${{ matrix.task }}
+
+      - name: Upload test logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-test-logs-${{ matrix.os }}
+          path: tools/testing/logs/
+          if-no-files-found: ignore
+
+  publish:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: certdiag_app/go.mod
+
+      - uses: arduino/setup-task@v2
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build all platforms and checksums
+        working-directory: certdiag_app
+        run: task release
+
+      - name: Create GitHub release for ${{ github.ref_name }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            --title "certdiag $GITHUB_REF_NAME" \
+            --generate-notes \
+            certdiag_app/dist/certdiag-* \
+            certdiag_app/dist/checksums.txt
