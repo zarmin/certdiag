@@ -117,3 +117,32 @@ func TestReencryptPEM_PreservesUnknownBlocks(t *testing.T) {
 		t.Error("re-encrypted key could not be read back with the new password")
 	}
 }
+
+// TestReencryptPEM_NoKeyIsAnError verifies that a PEM file without a private
+// key (a bare certificate) is refused instead of being copied and reported as
+// "password changed" (harness 16.7).
+func TestReencryptPEM_NoKeyIsAnError(t *testing.T) {
+	dir := t.TempDir()
+	cert := mustCert(t, "nokey.example")
+	path := filepath.Join(dir, "cert.crt")
+	certPEM := pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: cert.Raw})
+	if err := os.WriteFile(path, certPEM, 0600); err != nil {
+		t.Fatal(err)
+	}
+	out := filepath.Join(dir, "out.crt")
+
+	_, err := Reencrypt(ReencryptOptions{
+		InputPath:   path,
+		OutputPath:  out,
+		NewPassword: []byte("newpw"),
+	})
+	if err == nil {
+		t.Fatal("expected reencrypt of a certificate-only PEM to fail, got nil error")
+	}
+	if !strings.Contains(err.Error(), "no private key") {
+		t.Errorf("error does not say there is no private key: %v", err)
+	}
+	if _, statErr := os.Stat(out); statErr == nil {
+		t.Errorf("output file was written despite the error: %s", out)
+	}
+}

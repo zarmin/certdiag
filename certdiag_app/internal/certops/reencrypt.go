@@ -80,6 +80,10 @@ func Reencrypt(opts ReencryptOptions) (*ReencryptResult, error) {
 		return writeResult(outputPath, opts, encoded, container, skipped)
 
 	case certlib.FormatPEM:
+		if len(privateKeyItems(container.Items)) == 0 {
+			return nil, &OperationError{Op: "reencrypt",
+				Message: fmt.Sprintf("%s contains no private key; nothing to re-encrypt", opts.InputPath)}
+		}
 		encoded, err = reencryptPEMKeys(container, opts.NewPassword)
 		if err != nil {
 			return nil, &OperationError{Op: "reencrypt", Message: "re-encode PEM failed", Err: err}
