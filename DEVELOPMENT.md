@@ -65,9 +65,6 @@ Layers go `cmd` -> `certops` -> `certlib` -> `pkg`. A command parses flags, buil
 struct, calls into `certops`, and renders the Result; `certops` never prompts and never writes to
 the terminal. Anything under `pkg/` has no certdiag-specific dependencies.
 
-The design notes that explain why things are the way they are live in `.claude/docs/`
-(architecture, CLI, packages, trust engine, bundles).
-
 ## Platform
 
 The project targets darwin, linux and windows. Platform-specific code lives behind build tags or
