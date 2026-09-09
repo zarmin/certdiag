@@ -1,0 +1,26 @@
+kind: certdiag-config
+version: "1"
+
+passwords:
+  common_plaintext:
+    - "changeit"
+    - "p12pass"
+    - "multientry"
+    - "trustme"
+    - "secretpass"
+    - "mixedpass"
+    - ""
+
+  common_encrypted:
+    - "uQAKAlwgz1Y3PtqGWkXkdVtIuLPeaMZuQSjMizSIX511USzRL2Y4Ff5Trd8POWYWH1lu+b7YurgiQaIK7ntIiXmfLzo="
+    - "wbwrRI87r4sPRO0L0oAMKR8yL560LGOLOLAG0JKDmCuq+CN1GSD/E8T7m3N7yr2IpuHYPyGSeZe45e0VvIWEmVEQ"
+
+  by_filename:
+    - filename: "*.pfx"
+      plaintext_password: "ecdsapfx"
+    - filename: "with-chain.*"
+      plaintext_password: "chainpass"
+    - filepath: "__CERTS_DIR__/keystore.jceks"
+      plaintext_password: "jcekspass"
+    - filename: "encrypted-key.*"
+      encrypted_password: "kNpyABWp0qRLF7U47XjoUH5uYmw4PTiNi8VgMWc9gBzqV3ebsnnMuNMY1+6lh5woE/Z2lFW58QtzR/X0+UZUtq23IkA="

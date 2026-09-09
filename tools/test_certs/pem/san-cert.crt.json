@@ -1,0 +1,9 @@
+{
+  "filename": "san-cert.crt",
+  "format": "pem",
+  "type": "cert",
+  "expiration": "Jan 21 19:48:34 2027 GMT",
+  "serial": "335E33EE6F5C615361A80340A0CA087FAC921156",
+  "fingerprint": "AD:DD:14:2E:F9:00:16:28:12:91:31:7A:F5:1F:BB:92:E8:AE:6E:7B:D6:60:0A:51:6E:AC:B7:87:E4:8A:BB:2F",
+  "subject": "C=US, ST=California, L=San Francisco, O=Example Corp, CN=multi.example.com"
+}

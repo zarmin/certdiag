@@ -1,0 +1,43 @@
+# Binaries
+certdiag_app
+localtest*
+
+/bin/
+/build/
+/dist/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test artifacts
+*.test
+*.out
+
+# Coverage
+coverage.out
+
+# Go workspace (Go 1.18+)
+go.work
+go.work.sum
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env / secrets
+.env
+.env.*
+
+.idea
+
+.sonar*
+sonar-project.properties
+.scannerworkdir/
+.scannerwork/

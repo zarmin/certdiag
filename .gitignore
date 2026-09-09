@@ -1,0 +1,10 @@
+.idea
+.worktrees/
+tools/testing/logs/
+
+# Test run reports (generated on every harness run; .gitkeep is tracked)
+tools/testing/reports/*
+!tools/testing/reports/.gitkeep
+
+# go-task local checksum cache
+certdiag_app/.task/

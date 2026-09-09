@@ -1,0 +1,22 @@
+{
+  "filename": "multi-cert.p12",
+  "format": "pkcs12",
+  "type": "keystore",
+  "password": "multipass",
+  "contents": [
+    {
+      "type": "cert",
+      "expiration": "Jan 21 19:48:44 2027 GMT",
+      "serial": "34C11DBEBA1367ABDB89B37E17DEB8EF82D00119",
+      "fingerprint": "A8:A7:EF:C6:52:66:16:3B:97:DF:D9:43:67:E7:BC:6F:75:FE:A4:1A:5F:7F:C0:B1:4F:37:18:00:2D:B6:E4:33",
+      "subject": "C=US, ST=California, O=Example, CN=multi1.example.com"
+    },
+    {
+      "type": "cert",
+      "expiration": "Jan 21 19:48:44 2027 GMT",
+      "serial": "4918815BB885E2EC739E720F5ECBA29C6F683DAA",
+      "fingerprint": "4C:F9:5E:03:92:39:B7:FE:AA:36:83:D7:3D:CC:E8:EF:A0:76:D4:8B:56:C9:48:4A:C3:43:0F:30:D9:B7:10:B9",
+      "subject": "C=US, ST=California, O=Example, CN=multi2.example.com"
+    }
+  ]
+}

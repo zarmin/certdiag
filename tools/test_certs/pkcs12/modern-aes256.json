@@ -1,0 +1,10 @@
+{
+  "filename": "modern-aes256.p12",
+  "format": "pkcs12",
+  "type": "cert",
+  "password": "modernpass",
+  "expiration": "Jan 21 19:48:45 2027 GMT",
+  "serial": "77FD6BAF5B83F16CE0D005C0B7B3A3DF6B0CD609",
+  "fingerprint": "AD:D8:D7:69:B9:50:D6:52:22:D2:6A:1E:51:F9:6A:46:71:80:45:C9:65:DE:57:A4:92:4A:97:B4:E0:44:5E:B3",
+  "subject": "C=US, ST=California, O=Example, CN=modern.example.com"
+}

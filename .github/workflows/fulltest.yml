@@ -1,0 +1,55 @@
+name: fulltest
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+concurrency:
+  group: fulltest-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest      # linux x64 - full suite incl. docker infra
+            task: fulltest
+          - os: windows-latest     # x64 - all phases except docker
+            task: fulltest-nodocker
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: certdiag_app/go.mod
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - uses: arduino/setup-task@v2
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run ${{ matrix.task }}
+        working-directory: certdiag_app
+        env:
+          CERTDIAG_TEST_LOGGING: "1"
+          # Give the bare runner a detectable locale/timezone so the OS
+          # country-detection tests have something to detect (Linux runners
+          # default to UTC with no LANG).
+          TZ: America/New_York
+          LANG: en_US.UTF-8
+        run: task ${{ matrix.task }}
+
+      - name: Upload test logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-logs-${{ matrix.os }}
+          path: tools/testing/logs/
+          if-no-files-found: ignore

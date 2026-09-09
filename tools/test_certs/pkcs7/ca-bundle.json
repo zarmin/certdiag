@@ -1,0 +1,21 @@
+{
+  "filename": "ca-bundle.p7b",
+  "format": "pkcs7",
+  "type": "bundle",
+  "contents": [
+    {
+      "type": "cert",
+      "expiration": "Jan 20 19:49:11 2031 GMT",
+      "serial": "2837D0A3153634F4CD2EE2B9E50EBA52A10F789C",
+      "fingerprint": "DE:9F:D1:29:9E:66:F8:07:18:2B:33:74:7E:D2:9F:A9:F1:6F:03:A2:C8:C4:5D:A3:B8:75:77:64:01:2E:12:3B",
+      "subject": "C=US, ST=California, O=Example Intermediate CA, CN=Intermediate CA"
+    },
+    {
+      "type": "cert",
+      "expiration": "Jan 19 19:49:11 2036 GMT",
+      "serial": "3544077384A67DE2AB537EF982DACCFE9151E073",
+      "fingerprint": "F5:17:24:1D:AE:55:68:49:4F:B9:60:F7:46:F3:5B:D5:96:BA:ED:1B:6A:E9:F9:7A:E5:A6:AA:04:A4:27:46:98",
+      "subject": "C=US, ST=California, O=Example Root CA, CN=Root CA"
+    }
+  ]
+}

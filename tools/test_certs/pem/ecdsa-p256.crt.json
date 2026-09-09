@@ -1,0 +1,9 @@
+{
+  "filename": "ecdsa-p256.crt",
+  "format": "pem",
+  "type": "cert",
+  "expiration": "Jan 21 19:48:33 2027 GMT",
+  "serial": "1B13207A7661612C44D2E5143B6D6064ED524CCF",
+  "fingerprint": "EE:44:27:F7:60:59:43:6F:3C:E4:80:17:F4:BD:01:B9:8F:7B:5B:B6:9A:8E:BC:8D:F4:DD:81:BD:CF:C9:D0:3F",
+  "subject": "C=US, ST=California, L=San Francisco, O=Example Corp, CN=ecdsa.example.com"
+}

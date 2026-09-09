@@ -1,0 +1,9 @@
+{
+  "filename": "rsa4096.der",
+  "format": "der",
+  "type": "cert",
+  "expiration": "Jan 21 19:48:36 2027 GMT",
+  "serial": "7195AD5F896CFDE9F014CB7DDC1F7C23D599123D",
+  "fingerprint": "73:7F:D7:5C:9E:69:0B:2E:9C:F4:B4:EB:68:3F:43:A7:D7:5F:9D:0A:9E:75:AE:95:F3:C3:5A:B9:51:43:FF:46",
+  "subject": "C=US, ST=California, L=San Francisco, O=Example Corp, CN=rsa4096.example.com"
+}

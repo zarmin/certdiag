@@ -1,0 +1,9 @@
+{
+  "filename": "encrypted-aes256.crt",
+  "format": "pem",
+  "type": "cert",
+  "expiration": "Jan 21 19:48:33 2027 GMT",
+  "serial": "77F9B5FA942DA640338F1AA0AEF3E8BE9F4C5A35",
+  "fingerprint": "29:E0:41:FE:AC:4C:65:61:91:F2:B9:FB:A6:68:2F:F3:A6:5F:E6:EF:60:C7:F5:B6:E7:8F:34:02:C5:08:95:15",
+  "subject": "C=US, ST=California, L=San Francisco, O=Example Corp, CN=encrypted.example.com"
+}

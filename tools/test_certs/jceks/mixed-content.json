@@ -1,0 +1,24 @@
+{
+  "filename": "mixed-content.jceks",
+  "format": "jceks",
+  "type": "keystore",
+  "password": "mixedpass123",
+  "contents": [
+    {
+      "type": "secretkey",
+      "alias": "session-key"
+    },
+    {
+      "type": "secretkey",
+      "alias": "token-key"
+    },
+    {
+      "type": "key",
+      "alias": "web-server",
+      "expiration": "Jan 21 19:49:04 2027 GMT",
+      "serial": "76D13B33",
+      "fingerprint": "C0:6F:68:B3:9E:87:CD:E2:A1:6B:48:4D:20:7B:09:C2:02:55:83:1D:5F:A1:DF:5C:A5:43:8A:77:2B:37:60:B4",
+      "subject": "C = US, O = Example Corp, OU = Web, CN = web.example.com"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "filename": "leaf.crt",
+  "format": "pem",
+  "type": "cert",
+  "expiration": "Jan 21 19:48:32 2027 GMT",
+  "serial": "640B27315BF509A9F45BFFD1F8B8D3A62C7F1E75",
+  "fingerprint": "F6:A2:83:52:45:32:BC:80:8E:F1:23:F1:0C:54:1D:19:B1:53:FF:C1:62:D4:E9:EA:82:9E:39:27:D7:F8:B7:D8",
+  "subject": "C=US, ST=California, L=San Francisco, O=Example Corp, CN=secure.example.com"
+}

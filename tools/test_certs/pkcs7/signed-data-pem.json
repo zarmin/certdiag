@@ -1,0 +1,9 @@
+{
+  "filename": "signed-data-pem.p7s",
+  "format": "pkcs7",
+  "type": "cert",
+  "expiration": "Jan 21 19:49:11 2027 GMT",
+  "serial": "529C50B26F30B9104452BF824172021869F1FF12",
+  "fingerprint": "58:33:68:67:FE:90:CF:0B:20:6D:64:D7:78:19:8D:DF:08:D6:45:57:B2:4C:36:8D:8F:FE:57:43:59:AD:FA:50",
+  "subject": "C=US, ST=California, L=San Francisco, O=Example Corp, CN=server.example.com"
+}

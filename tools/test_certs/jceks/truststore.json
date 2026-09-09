@@ -1,0 +1,16 @@
+{
+  "filename": "truststore.jceks",
+  "format": "jceks",
+  "type": "truststore",
+  "password": "trustpass456",
+  "contents": [
+    {
+      "type": "trustedcert",
+      "alias": "root-ca",
+      "expiration": "Jan 19 19:49:06 2036 GMT",
+      "serial": "13EE0C8C466D03C91F54216909DFD8FAEAB49C7D",
+      "fingerprint": "ED:94:54:5B:FE:AD:79:9C:A8:02:42:D3:AF:12:75:B3:55:65:8D:30:54:9B:2D:EB:BD:BE:FA:38:51:4E:8F:9C",
+      "subject": "C = US, O = Example Root CA, CN = Root CA"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "filename": "certificate-request.csr.der",
+  "format": "der",
+  "type": "csr",
+  "subject": "C=US, ST=California, L=San Francisco, O=Example Corp, CN=csr.example.com"
+}

@@ -1,0 +1,29 @@
+{
+  "filename": "chain-rsa4096.p12",
+  "format": "pkcs12",
+  "type": "keystore",
+  "password": "chainpass456",
+  "contents": [
+    {
+      "type": "cert",
+      "expiration": "Jan 21 19:48:42 2027 GMT",
+      "serial": "6BBDC10351B8C08E49B0514035E7020A0AEFEB96",
+      "fingerprint": "03:D4:69:18:CE:90:4D:5F:7C:F4:D8:11:78:6F:40:DA:EF:DB:B2:3D:FD:21:87:7C:B5:D8:BC:3D:6A:E6:E3:86",
+      "subject": "C=US, ST=California, L=San Francisco, O=Example Corp, CN=chain.example.com"
+    },
+    {
+      "type": "cert",
+      "expiration": "Jan 20 19:48:42 2031 GMT",
+      "serial": "48C2C6FE86BAD7A99C108E4787DF05793AE679D0",
+      "fingerprint": "E3:07:87:B6:A4:D8:24:B2:BE:2F:04:F1:74:4D:02:2C:E5:B0:56:27:CC:60:F7:40:A5:BE:BB:44:25:FA:F1:FF",
+      "subject": "C=US, ST=California, O=Example Intermediate CA, CN=Intermediate CA"
+    },
+    {
+      "type": "cert",
+      "expiration": "Jan 19 19:48:41 2036 GMT",
+      "serial": "79F0FFB9E9F7784F7FE2620D8FAE79D699D1F363",
+      "fingerprint": "C4:C4:1C:99:2B:A5:B0:8E:C0:9D:9D:75:3C:E4:4E:0C:B0:F7:48:01:38:45:8B:20:BB:D7:4C:E5:1B:3A:DB:0D",
+      "subject": "C=US, ST=California, O=Example Root CA, CN=Root CA"
+    }
+  ]
+}

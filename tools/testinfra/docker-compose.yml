@@ -1,0 +1,213 @@
+services:
+  # --- nginx TLS servers ---
+
+  modern:
+    image: nginx:1.27-alpine
+    platform: linux/amd64
+    ports: ["14430:443"]
+    volumes:
+      - ./certs:/certs:ro
+      - ./configs/nginx-modern.conf:/etc/nginx/nginx.conf:ro
+
+  legacy:
+    build:
+      context: .
+      dockerfile: Dockerfile.legacy
+      platforms: ["linux/amd64"]
+    platform: linux/amd64
+    ports: ["14431:443"]
+    volumes:
+      - ./certs:/certs:ro
+
+  sslv3:
+    build:
+      context: .
+      dockerfile: Dockerfile.sslv3
+      platforms: ["linux/amd64"]
+    platform: linux/amd64
+    ports: ["14432:443"]
+    volumes:
+      - ./certs:/certs:ro
+
+  expired:
+    image: nginx:1.27-alpine
+    platform: linux/amd64
+    ports: ["14433:443"]
+    volumes:
+      - ./certs:/certs:ro
+      - ./configs/nginx-expired.conf:/etc/nginx/nginx.conf:ro
+
+  selfsigned:
+    image: nginx:1.27-alpine
+    platform: linux/amd64
+    ports: ["14434:443"]
+    volumes:
+      - ./certs:/certs:ro
+      - ./configs/nginx-selfsigned.conf:/etc/nginx/nginx.conf:ro
+
+  wronghost:
+    image: nginx:1.27-alpine
+    platform: linux/amd64
+    ports: ["14435:443"]
+    volumes:
+      - ./certs:/certs:ro
+      - ./configs/nginx-wronghost.conf:/etc/nginx/nginx.conf:ro
+
+  incomplete:
+    image: nginx:1.27-alpine
+    platform: linux/amd64
+    ports: ["14436:443"]
+    volumes:
+      - ./certs:/certs:ro
+      - ./configs/nginx-incomplete.conf:/etc/nginx/nginx.conf:ro
+
+  mtls:
+    image: nginx:1.27-alpine
+    platform: linux/amd64
+    ports: ["14437:443"]
+    volumes:
+      - ./certs:/certs:ro
+      - ./configs/nginx-mtls.conf:/etc/nginx/nginx.conf:ro
+
+  redirect:
+    image: nginx:1.27-alpine
+    platform: linux/amd64
+    ports: ["14438:443"]
+    volumes:
+      - ./certs:/certs:ro
+      - ./configs/nginx-redirect.conf:/etc/nginx/nginx.conf:ro
+
+  echo:
+    image: nginx:1.27-alpine
+    platform: linux/amd64
+    ports: ["14439:443"]
+    volumes:
+      - ./certs:/certs:ro
+      - ./configs/nginx-echo.conf:/etc/nginx/nginx.conf:ro
+
+  # --- STARTTLS services ---
+
+  smtp:
+    image: boky/postfix:v4.3.0
+    platform: linux/amd64
+    ports: ["14587:587"]
+    environment:
+      ALLOWED_SENDER_DOMAINS: "localhost"
+      TLS_KEY: "/certs/server.key"
+      TLS_CRT: "/certs/server.crt"
+    volumes:
+      - ./certs:/certs:ro
+
+  imap:
+    image: dovecot/dovecot:2.3.21
+    platform: linux/amd64
+    ports:
+      - "14143:143"
+      - "14110:110"
+    volumes:
+      - ./certs:/certs:ro
+      - ./configs/dovecot.conf:/etc/dovecot/dovecot.conf:ro
+
+  ldap:
+    image: osixia/openldap:1.5.0
+    platform: linux/amd64
+    ports: ["14389:389"]
+    environment:
+      LDAP_TLS_CRT_FILENAME: server.crt
+      LDAP_TLS_KEY_FILENAME: server.key
+      LDAP_TLS_CA_CRT_FILENAME: ca.crt
+      LDAP_TLS_VERIFY_CLIENT: never
+    volumes:
+      - ./certs/server.crt:/container/service/slapd/assets/certs/server.crt
+      - ./certs/server.key:/container/service/slapd/assets/certs/server.key
+      - ./certs/ca.crt:/container/service/slapd/assets/certs/ca.crt
+
+  postgres:
+    image: postgres:16-alpine
+    platform: linux/amd64
+    ports: ["14532:5432"]
+    environment:
+      POSTGRES_PASSWORD: testpass
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - ./certs:/certs-src:ro
+      - ./configs/pg_hba.conf:/pg_hba.conf:ro
+    command: >
+      bash -c "
+      cp /certs-src/server.crt /var/lib/postgresql/server.crt &&
+      cp /certs-src/server.key /var/lib/postgresql/server.key &&
+      chmod 600 /var/lib/postgresql/server.key &&
+      chown postgres:postgres /var/lib/postgresql/server.crt /var/lib/postgresql/server.key &&
+      cp /pg_hba.conf /var/lib/postgresql/pg_hba.conf &&
+      chown postgres:postgres /var/lib/postgresql/pg_hba.conf &&
+      exec docker-entrypoint.sh postgres -c ssl=on -c ssl_cert_file=/var/lib/postgresql/server.crt -c ssl_key_file=/var/lib/postgresql/server.key -c hba_file=/var/lib/postgresql/pg_hba.conf
+      "
+
+  mysql:
+    image: mysql:8.0.46
+    platform: linux/amd64
+    ports: ["14306:3306"]
+    environment:
+      MYSQL_ROOT_PASSWORD: testpass
+      MYSQL_ALLOW_EMPTY_PASSWORD: "no"
+    volumes:
+      - ./certs:/certs:ro
+      - ./configs/mysql.cnf:/etc/mysql/conf.d/ssl.cnf:ro
+    # The bind-mounted key may be unreadable by the in-container mysql user:
+    # host perms/ownership vary across checkouts (git gives 0644; a 0600 file
+    # owned by a foreign uid is unreadable to mysql). Copy the certs to an
+    # internal dir owned by mysql so TLS init works regardless of host state.
+    entrypoint:
+      - bash
+      - -c
+      - |
+        set -e
+        mkdir -p /etc/mysql-certs
+        cp /certs/ca.crt /certs/server.crt /certs/server.key /etc/mysql-certs/
+        chown -R mysql:mysql /etc/mysql-certs
+        chmod 644 /etc/mysql-certs/ca.crt /etc/mysql-certs/server.crt
+        chmod 600 /etc/mysql-certs/server.key
+        exec docker-entrypoint.sh mysqld
+
+  # --- revocation services (M24: OCSP/CRL) ---
+
+  ocsp-responder:
+    image: alpine:3.20
+    platform: linux/amd64
+    ports: ["14560:2560"]
+    volumes:
+      - ./certs:/certs:ro
+    # openssl's built-in OCSP responder. -nrequest keeps one process serving many
+    # requests (no per-request restart gap); the loop restarts it if it ever exits.
+    command:
+      - sh
+      - -c
+      - |
+        apk add --no-cache openssl >/dev/null 2>&1
+        while true; do
+          openssl ocsp -index /certs/revca/index.txt -CA /certs/ca.crt \
+            -rsigner /certs/ca.crt -rkey /certs/ca.key -port 2560 -nrequest 100000
+        done
+
+  crl-http:
+    image: nginx:1.27-alpine
+    platform: linux/amd64
+    ports: ["14561:80"]
+    volumes:
+      - ./certs/crl:/usr/share/nginx/html:ro
+
+  tls-revocable-good:
+    image: nginx:1.27-alpine
+    platform: linux/amd64
+    ports: ["14562:443"]
+    volumes:
+      - ./certs:/certs:ro
+      - ./configs/nginx-revocable-good.conf:/etc/nginx/nginx.conf:ro
+
+  tls-revocable-revoked:
+    image: nginx:1.27-alpine
+    platform: linux/amd64
+    ports: ["14563:443"]
+    volumes:
+      - ./certs:/certs:ro
+      - ./configs/nginx-revocable-revoked.conf:/etc/nginx/nginx.conf:ro

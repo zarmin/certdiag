@@ -1,0 +1,9 @@
+{
+  "filename": "ecdsa-p256.der",
+  "format": "der",
+  "type": "cert",
+  "expiration": "Jan 21 19:48:37 2027 GMT",
+  "serial": "115BEAC49D636506294CE62EC053893656E42FFD",
+  "fingerprint": "18:37:DA:E7:11:45:C5:68:7B:CB:A7:E4:9D:20:2A:76:33:55:D0:A6:B8:BC:8A:EB:11:0D:00:03:85:4B:62:FD",
+  "subject": "C=US, ST=California, L=San Francisco, O=Example Corp, CN=ecdsa.example.com"
+}

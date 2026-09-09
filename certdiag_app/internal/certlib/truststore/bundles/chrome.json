@@ -1,0 +1,17 @@
+{
+  "id": "chrome",
+  "name": "Chrome Root Store",
+  "source_url": "https://chromium.googlesource.com/chromium/src/+/main/net/data/ssl/chrome_root_store/",
+  "upstream_revision": "version_major 39",
+  "extracted_at": "2026-09-01",
+  "license": "BSD-3-Clause",
+  "purpose_scope": [
+    "server_auth"
+  ],
+  "trusted_count": 100,
+  "distrusted_count": 0,
+  "sha256": "1d3fa391f1ebc2472f4773f309cbc0cd88009444ee77bb565f4e857eeba650ad",
+  "caveats": [
+    "the Chrome Root Store is scoped to public TLS server authentication; it is not an authority for client auth, code signing or S/MIME"
+  ]
+}

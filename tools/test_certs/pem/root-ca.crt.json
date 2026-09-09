@@ -1,0 +1,9 @@
+{
+  "filename": "root-ca.crt",
+  "format": "pem",
+  "type": "cert",
+  "expiration": "Jan 19 19:48:30 2036 GMT",
+  "serial": "61454461FD63B514D1C71AE66E8CCF6432BA40D5",
+  "fingerprint": "8F:27:BC:31:D8:47:2D:00:9F:CD:64:4B:8D:A6:F1:E9:6B:80:37:88:31:17:10:CC:A6:BE:D3:55:79:C2:FE:DB",
+  "subject": "C=US, ST=California, L=San Francisco, O=Example Root CA, CN=Root CA"
+}

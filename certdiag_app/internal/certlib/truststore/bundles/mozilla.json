@@ -1,0 +1,16 @@
+{
+  "id": "mozilla",
+  "name": "Mozilla CA bundle",
+  "source_url": "https://raw.githubusercontent.com/nss-dev/nss/master/lib/ckfw/builtins/certdata.txt",
+  "extracted_at": "2026-09-01",
+  "license": "MPL-2.0",
+  "purpose_scope": [
+    "server_auth"
+  ],
+  "trusted_count": 121,
+  "distrusted_count": 0,
+  "sha256": "81b7f2576333a2e360e673f912d7b0b7a765d836c731003e348a46cac5d37198",
+  "caveats": [
+    "name constraints that Firefox applies in NSS code are not expressed in certdata.txt and are not carried here"
+  ]
+}

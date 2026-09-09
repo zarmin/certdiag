@@ -1,0 +1,26 @@
+FROM nginx:1.18
+
+# Switch to archive repos (Buster is EOL)
+RUN sed -i 's|deb.debian.org|archive.debian.org|g' /etc/apt/sources.list && \
+    sed -i 's|security.debian.org|archive.debian.org|g' /etc/apt/sources.list && \
+    sed -i '/stretch/d' /etc/apt/sources.list && \
+    echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99no-check-valid
+
+# Build OpenSSL 1.1.1w with SSLv3 support enabled, install to correct multiarch path
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends build-essential wget ca-certificates dpkg-dev && \
+    MULTIARCH=$(dpkg-architecture -qDEB_HOST_MULTIARCH) && \
+    wget -q https://github.com/openssl/openssl/releases/download/OpenSSL_1_1_1w/openssl-1.1.1w.tar.gz && \
+    tar xzf openssl-1.1.1w.tar.gz && \
+    cd openssl-1.1.1w && \
+    ./config enable-ssl3 enable-ssl3-method --prefix=/usr --libdir=lib/$MULTIARCH --openssldir=/etc/ssl shared && \
+    make -j$(nproc) && \
+    make install_sw && \
+    cd / && rm -rf openssl-1.1.1w openssl-1.1.1w.tar.gz && \
+    ldconfig && \
+    apt-get purge -y build-essential wget dpkg-dev && \
+    apt-get autoremove -y && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY configs/nginx-sslv3.conf /etc/nginx/nginx.conf
+CMD ["nginx", "-g", "daemon off;"]

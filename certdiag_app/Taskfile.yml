@@ -1,0 +1,201 @@
+version: "3"
+
+vars:
+  APP_NAME: certdiag
+  BUILD_DIR: dist
+  INSTALL_DIR: /usr/local/bin
+  PYTHON: python3
+  BUILD_DATE:
+    sh: git log -1 --format=%cd --date=format:'%Y-%m-%d %H:%M:%S'
+  GIT_COMMIT:
+    sh: git rev-parse --short HEAD
+  LDFLAGS: >-
+    -X 'github.com/zarmin/certdiag/certdiag_app/cmd.BuildDate={{.BUILD_DATE}}'
+    -X 'github.com/zarmin/certdiag/certdiag_app/cmd.GitCommit={{.GIT_COMMIT}}'
+    -X 'github.com/zarmin/certdiag/certdiag_app/cmd.Version=dev'
+  RACE: "false"
+  BUNDLE_DIR: internal/certlib/truststore/bundles
+
+tasks:
+  default:
+    desc: Build for current OS/architecture
+    cmds:
+      - task: build
+
+  # ── Build ────────────────────────────────────────────────────────
+
+  build:
+    desc: Build for current OS/architecture
+    sources:
+      - "**/*.go"
+      - go.mod
+      - go.sum
+      # Embedded via //go:embed, so a bundle refresh must trigger a rebuild.
+      - "{{.BUNDLE_DIR}}/**"
+    generates:
+      - "{{.BUILD_DIR}}/{{.APP_NAME}}{{exeExt}}"
+    cmds:
+      - go build -ldflags "{{.LDFLAGS}}" -o {{.BUILD_DIR}}/{{.APP_NAME}}{{exeExt}} .
+    env:
+      CGO_ENABLED: "0"
+
+  all:
+    desc: Build for all platforms
+    deps: [clean]
+    cmds:
+      - task: _build-cross
+        vars: { GOOS: windows, GOARCH: "386",   SUFFIX: "-windows-386.exe" }
+      - task: _build-cross
+        vars: { GOOS: windows, GOARCH: amd64,   SUFFIX: "-windows-amd64.exe" }
+      - task: _build-cross
+        vars: { GOOS: windows, GOARCH: arm64,   SUFFIX: "-windows-arm64.exe" }
+      - task: _build-cross
+        vars: { GOOS: darwin,  GOARCH: amd64,   SUFFIX: "-darwin-amd64" }
+      - task: _build-cross
+        vars: { GOOS: darwin,  GOARCH: arm64,   SUFFIX: "-darwin-arm64" }
+      - task: _build-cross
+        vars: { GOOS: linux,   GOARCH: amd64,   SUFFIX: "-linux-amd64" }
+      - task: _build-cross
+        vars: { GOOS: linux,   GOARCH: "386",   SUFFIX: "-linux-386" }
+      - task: _build-cross
+        vars: { GOOS: linux,   GOARCH: arm64,   SUFFIX: "-linux-arm64" }
+      - task: _build-cross
+        vars: { GOOS: linux,   GOARCH: arm,     SUFFIX: "-linux-arm", GOARM: "7" }
+
+  localtest:
+    desc: Build for test platforms (win/arm64, darwin/arm64, linux/arm64)
+    deps: [clean, build]
+    cmds:
+      - task: _build-cross
+        vars: { GOOS: windows, GOARCH: arm64, SUFFIX: "-windows-arm64.exe" }
+      - task: _build-cross
+        vars: { GOOS: darwin,  GOARCH: arm64, SUFFIX: "-darwin-arm64" }
+      - task: _build-cross
+        vars: { GOOS: linux,   GOARCH: arm64, SUFFIX: "-linux-arm64" }
+
+  _build-cross:
+    internal: true
+    cmds:
+      - go build -ldflags "{{.LDFLAGS}}" -o {{.BUILD_DIR}}/{{.APP_NAME}}{{.SUFFIX}} .
+    env:
+      CGO_ENABLED: "0"
+      GOOS: "{{.GOOS}}"
+      GOARCH: "{{.GOARCH}}"
+      GOARM: "{{.GOARM}}"
+
+  install:
+    desc: Install to /usr/local/bin
+    platforms: [linux, darwin]
+    deps: [build]
+    cmds:
+      - install -m 755 {{.BUILD_DIR}}/{{.APP_NAME}} {{.INSTALL_DIR}}/{{.APP_NAME}}
+      - echo "Installed{{":"}} {{.INSTALL_DIR}}/{{.APP_NAME}}"
+
+  clean:
+    desc: Remove build artifacts
+    cmds:
+      - rm -rf {{.BUILD_DIR}}
+
+  # -- Embedded root CA snapshots ---------------------------------
+
+  update-bundles:
+    desc: "Refresh the embedded Mozilla/Chrome root snapshots (NETWORK; review and commit the result)"
+    cmds:
+      - go run ./tools/mkbundle -source mozilla -out {{.BUNDLE_DIR}}
+      - go run ./tools/mkbundle -source chrome  -out {{.BUNDLE_DIR}}
+      - echo "Review the diff above, then commit {{.BUNDLE_DIR}}"
+
+  update-bundles-diff:
+    desc: Report what a bundle refresh would change, writing nothing
+    cmds:
+      - go run ./tools/mkbundle -source all -out {{.BUNDLE_DIR}} -diff
+
+  refresh-tables:
+    desc: "Regenerate the TLS name tables (IANA) and CT log names (Google) (NETWORK; review and commit the result)"
+    cmds:
+      - go run ./tools/mktables
+      - echo "Review the diff above, then commit the *_gen.go files"
+
+  # ── Tier 1: Fast local ──────────────────────────────────────────
+
+  test:
+    desc: Go unit tests (~20s). Report written to tools/testing/reports/
+    cmds:
+      - task: unit-test
+
+  unit-test:
+    desc: Go unit tests (~20s)
+    dir: ../tools/testing
+    cmds:
+      - "{{.PYTHON}} -m harness --phase unit {{.RACE_FLAG}}"
+    vars:
+      RACE_FLAG: '{{if eq .RACE "true"}}--race{{end}}'
+
+  cli-test:
+    desc: CLI smoke + edge-case tests (~1.5min, no network). Filter with -- --suite t06
+    deps: [build]
+    dir: ../tools/testing
+    cmds:
+      - "{{.PYTHON}} -m harness --phase cli {{.CLI_ARGS}}"
+
+  # ── Tier 2: Thorough local ─────────────────────────────────────
+
+  extended-unit-test:
+    desc: Go fulltest tag (~1min)
+    dir: ../tools/testing
+    cmds:
+      - "{{.PYTHON}} -m harness --phase extended {{.RACE_FLAG}}"
+    vars:
+      RACE_FLAG: '{{if eq .RACE "true"}}--race{{end}}'
+
+  stress-test:
+    desc: Password-cache stress test (~16s, 35s limit)
+    deps: [build]
+    dir: ../tools/testing
+    cmds:
+      - "{{.PYTHON}} -m harness --phase stress"
+
+  # ── Tier 3: Infrastructure ─────────────────────────────────────
+
+  remote-docker-test:
+    desc: Docker infra + remote tests (Go dockertest + d01 CLI suite)
+    dir: ../tools/testing
+    cmds:
+      - "{{.PYTHON}} -m harness --phase docker {{.RACE_FLAG}}"
+    vars:
+      RACE_FLAG: '{{if eq .RACE "true"}}--race{{end}}'
+
+  testinfra-up:
+    desc: Start Docker test infrastructure
+    dir: ../tools/testinfra
+    cmds:
+      - docker compose up -d --build
+      - echo "Waiting for services to be ready..."
+      - sleep 10
+      - echo "Test infrastructure is up"
+
+  testinfra-down:
+    desc: Stop Docker test infrastructure
+    dir: ../tools/testinfra
+    cmds:
+      - docker compose down
+
+  # ── Combined ───────────────────────────────────────────────────
+
+  fulltest:
+    desc: All tests (unit + extended + CLI + stress + docker). Report in tools/testing/reports/
+    deps: [build]
+    dir: ../tools/testing
+    cmds:
+      - "{{.PYTHON}} -m harness {{.RACE_FLAG}}"
+    vars:
+      RACE_FLAG: '{{if eq .RACE "true"}}--race{{end}}'
+
+  fulltest-nodocker:
+    desc: All tests except docker (for hosts without Linux Docker, e.g. Windows CI)
+    deps: [build]
+    dir: ../tools/testing
+    cmds:
+      - "{{.PYTHON}} -m harness --skip-docker {{.RACE_FLAG}}"
+    vars:
+      RACE_FLAG: '{{if eq .RACE "true"}}--race{{end}}'

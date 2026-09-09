@@ -1,0 +1,9 @@
+{
+  "filename": "intermediate-ca.crt",
+  "format": "pem",
+  "type": "cert",
+  "expiration": "Jan 20 19:48:30 2031 GMT",
+  "serial": "200B639C76F38D670A81FE2E732778DB472FB0B0",
+  "fingerprint": "F6:71:D3:9D:44:3E:E5:AE:DB:65:E9:1F:07:AE:BA:59:E4:34:63:A8:54:23:B3:B0:AC:A8:D6:D7:7F:91:E9:F0",
+  "subject": "C=US, ST=California, L=San Francisco, O=Example Intermediate CA, CN=Intermediate CA"
+}

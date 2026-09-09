@@ -1,0 +1,22 @@
+# A Linux image whose OS trust store is ours to control.
+#
+# Every other test avoids the real OS store because its contents differ per
+# machine. This image installs the testinfra root CA into the system store, so
+# certdiag's OS-store path -- the real ReadOSStore and the real verifier -- can
+# be exercised with a known-correct answer.
+FROM debian:stable-slim
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# The CA is baked in at build time so the container needs no entrypoint work.
+COPY certs/ca.crt /usr/local/share/ca-certificates/certdiag-testinfra.crt
+RUN update-ca-certificates
+
+# Sanity: the CA must actually be in the system bundle, or every assertion in
+# dockertest_trust_test.go would be vacuously "untrusted".
+RUN grep -q "BEGIN CERTIFICATE" /etc/ssl/certs/ca-certificates.crt \
+    && openssl x509 -in /usr/local/share/ca-certificates/certdiag-testinfra.crt -noout -subject
+
+CMD ["sleep", "infinity"]

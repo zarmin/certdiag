@@ -1,0 +1,9 @@
+{
+  "filename": "rsa2048.der",
+  "format": "der",
+  "type": "cert",
+  "expiration": "Jan 21 19:48:35 2027 GMT",
+  "serial": "4345FAA06552B01EF5A39646C81A6FBCE0D0AE58",
+  "fingerprint": "6E:AE:4F:53:60:87:08:E8:2D:D9:A8:D2:3F:54:C7:41:24:19:6E:1F:CF:DE:8D:C5:F8:15:FB:B5:8D:EA:5C:D3",
+  "subject": "C=US, ST=California, L=San Francisco, O=Example Corp, CN=rsa2048.example.com"
+}

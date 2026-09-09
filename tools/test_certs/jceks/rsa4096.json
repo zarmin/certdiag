@@ -1,0 +1,16 @@
+{
+  "filename": "rsa4096.jceks",
+  "format": "jceks",
+  "type": "keystore",
+  "password": "strongpass456",
+  "contents": [
+    {
+      "type": "key",
+      "alias": "rsa4096-cert",
+      "expiration": "Jan 21 19:49:01 2027 GMT",
+      "serial": "50DA46B9",
+      "fingerprint": "E0:08:2D:41:14:D1:87:DB:22:CE:08:89:78:F7:CC:1A:6E:7D:EE:20:CD:40:37:8D:23:6B:0B:16:FF:D8:34:3C",
+      "subject": "C = US, ST = California, L = San Francisco, O = Example Corp, OU = IT, CN = rsa4096.example.com"
+    }
+  ]
+}

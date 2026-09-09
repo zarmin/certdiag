@@ -1,0 +1,24 @@
+{
+  "filename": "truststore.jks",
+  "format": "jks",
+  "type": "truststore",
+  "password": "trustpass123",
+  "contents": [
+    {
+      "type": "trustedcert",
+      "alias": "root-ca-1",
+      "expiration": "Jan 19 19:48:55 2036 GMT",
+      "serial": "183EE1E2CAD60950AA227DBD807A9F40B635E650",
+      "fingerprint": "7B:7D:0E:72:C1:55:87:C5:D2:17:8E:0E:08:D6:7D:E5:A9:0D:76:DE:0B:FD:EA:7D:CD:62:24:C4:45:A8:D1:BC",
+      "subject": "C = US, O = Example Root CA 1, CN = Root CA 1"
+    },
+    {
+      "type": "trustedcert",
+      "alias": "root-ca-2",
+      "expiration": "Jan 19 19:48:55 2036 GMT",
+      "serial": "3C0930A25BE22CD613804D78986A2EA9D32B6177",
+      "fingerprint": "79:37:ED:38:33:11:23:17:DA:3A:31:95:23:98:69:ED:E4:D9:8A:BF:4A:61:9B:08:99:84:EF:88:67:F7:68:B1",
+      "subject": "C = US, O = Example Root CA 2, CN = Root CA 2"
+    }
+  ]
+}

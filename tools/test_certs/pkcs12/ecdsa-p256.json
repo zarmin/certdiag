@@ -1,0 +1,10 @@
+{
+  "filename": "ecdsa-p256.p12",
+  "format": "pkcs12",
+  "type": "cert",
+  "password": "ecdsapass",
+  "expiration": "Jan 21 19:48:43 2027 GMT",
+  "serial": "7CBF04D79B416A5ACC880F4259F442BEAD90EE67",
+  "fingerprint": "65:E0:3F:DD:E5:DF:D1:15:0E:A3:33:0D:58:82:E4:B4:CB:49:91:51:AD:26:40:E0:20:C2:6E:95:5C:C8:85:E3",
+  "subject": "C=US, ST=California, L=San Francisco, O=Example Corp, CN=ecdsa.example.com"
+}

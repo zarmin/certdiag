@@ -1,0 +1,16 @@
+{
+  "filename": "simple-rsa2048.jks",
+  "format": "jks",
+  "type": "keystore",
+  "password": "password123",
+  "contents": [
+    {
+      "type": "key",
+      "alias": "simple-rsa2048",
+      "expiration": "Jan 21 19:48:48 2027 GMT",
+      "serial": "3C3E1179",
+      "fingerprint": "BE:43:6F:6C:5A:07:2F:14:CA:12:C0:1A:1E:A5:4D:C9:FB:E8:6A:89:73:22:19:54:E0:98:79:6B:43:4C:7B:08",
+      "subject": "C = US, ST = California, L = San Francisco, O = Example Corp, OU = IT, CN = simple.example.com"
+    }
+  ]
+}

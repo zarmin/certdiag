@@ -1,0 +1,9 @@
+{
+  "filename": "single-rsa2048.crt",
+  "format": "pem",
+  "type": "cert",
+  "expiration": "Jan 21 19:48:28 2027 GMT",
+  "serial": "728984D53AAC9E62FE0963329C5898395D7E04A8",
+  "fingerprint": "BB:D5:21:9D:B7:74:EC:9F:26:09:8D:34:91:9E:10:F9:DF:A5:5A:7A:C4:AB:58:C8:FC:90:5F:18:38:72:7E:E9",
+  "subject": "C=US, ST=California, L=San Francisco, O=Example Corp, CN=example.com"
+}

@@ -1,0 +1,2 @@
+V	360705073249Z		1000	unknown	/CN=revocable-good.localhost
+R	360705073249Z	260708073249Z,keyCompromise	1001	unknown	/CN=revocable-revoked.localhost

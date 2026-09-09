@@ -1,0 +1,16 @@
+{
+  "filename": "imported-from-pkcs12.jks",
+  "format": "jks",
+  "type": "keystore",
+  "password": "jksimport123",
+  "contents": [
+    {
+      "type": "key",
+      "alias": "imported-cert",
+      "expiration": "Jan 21 19:48:53 2027 GMT",
+      "serial": "6E368221C4A37D10698F63E6728201B6FB2851EB",
+      "fingerprint": "59:FD:C2:FA:07:D5:38:C8:49:10:0B:D3:F7:1E:63:E7:84:2E:99:B5:3E:B3:54:1E:15:F8:58:BA:F2:3D:8F:20",
+      "subject": "C = US, ST = California, L = San Francisco, O = Example Corp, CN = import.example.com"
+    }
+  ]
+}

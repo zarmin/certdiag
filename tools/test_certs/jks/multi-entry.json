@@ -1,0 +1,24 @@
+{
+  "filename": "multi-entry.jks",
+  "format": "jks",
+  "type": "keystore",
+  "password": "multipass789",
+  "contents": [
+    {
+      "type": "key",
+      "alias": "api-server",
+      "expiration": "Jan 21 19:48:52 2027 GMT",
+      "serial": "4F4154DC",
+      "fingerprint": "35:4C:B8:6E:78:E3:5C:01:8A:66:84:AB:BE:1D:A4:3C:54:97:6E:E6:5E:26:02:A3:0A:4F:1B:4D:72:B9:AF:09",
+      "subject": "C = US, O = Example Corp, OU = API, CN = api.example.com"
+    },
+    {
+      "type": "key",
+      "alias": "web-server",
+      "expiration": "Jan 21 19:48:51 2027 GMT",
+      "serial": "68B5A3EF",
+      "fingerprint": "F2:A9:CB:D0:C3:59:46:72:52:4B:2F:9F:B9:99:DC:E8:BA:99:6B:51:F2:44:46:1E:F9:AB:B3:47:EE:1F:A3:A0",
+      "subject": "C = US, O = Example Corp, OU = Web, CN = web.example.com"
+    }
+  ]
+}
